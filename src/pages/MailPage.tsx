@@ -39,8 +39,9 @@ function buildSendMailListFormat(rows: ItemRow[]) {
     .join(',')
 }
 
+let _rowId = 0
 function newRow(): ItemRow {
-  return { id: crypto.randomUUID(), itemType: 'Currency_', itemId: '', count: '1' }
+  return { id: String(++_rowId), itemType: 'Currency_', itemId: '', count: '1' }
 }
 
 function getTodayStr() {
