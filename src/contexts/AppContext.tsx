@@ -4,7 +4,7 @@ import type { ServerConfig, UserInfo } from '../types'
 
 const SERVERS: ServerConfig[] = [
   { name: '로컬', url: 'http://localhost:8080' },
-  { name: '운영', url: 'http://localhost:8080' },
+  { name: '운영', url: 'http://172.30.1.32:8080' },
 ]
 
 interface AppContextType {
