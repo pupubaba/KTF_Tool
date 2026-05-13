@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls D:/KTF_SERVER/src/main/java/com/root3games/ktf/domain/controller/)",
+      "Read(//d/KTF_SERVER/src/main/java/com/root3games/ktf/domain/controller/**)",
+      "Bash(find D:/KTF_SERVER/src/main/java/com/root3games/ktf/domain/model/dto -name \"*.java\" | grep -i mail)",
+      "Read(//d/KTF_SERVER/src/main/java/com/root3games/ktf/domain/model/dto/**)",
+      "Bash(find D:/KTF_SERVER/src/main/java/com/root3games/ktf/domain/model/dto -name \"*.java\" | grep -i \"User\\\\|Login\")",
+      "Bash(npm --version)",
+      "Bash(npm create *)",
+      "Bash(cd \"C:/Users/USER/Desktop\" && npm create vite@latest 운영툴 -- --template react-ts 2>&1)",
+      "Read(//c/Users/USER/Desktop/**)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(ls D:/KTF_SERVER/src/main/java/com/root3games/ktf/domain/service/RewardReceive/)",
+      "Read(//d/KTF_SERVER/src/main/java/com/root3games/ktf/domain/service/RewardReceive/**)",
+      "Bash(find D:/KTF_SERVER/src/main/java/com/root3games/ktf/domain/service/Mail -name \"*.java\")",
+      "Read(//d/KTF_SERVER/src/main/java/com/root3games/ktf/domain/service/Mail/**)",
+      "Bash(docker build *)"
+    ]
+  }
+}
