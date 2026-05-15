@@ -17,7 +17,11 @@
       "Read(//d/KTF_SERVER/src/main/java/com/root3games/ktf/domain/service/RewardReceive/**)",
       "Bash(find D:/KTF_SERVER/src/main/java/com/root3games/ktf/domain/service/Mail -name \"*.java\")",
       "Read(//d/KTF_SERVER/src/main/java/com/root3games/ktf/domain/service/Mail/**)",
-      "Bash(docker build *)"
+      "Bash(docker build *)",
+      "Bash(find D:/KTF_SERVER/src/main/java/com/root3games/ktf/domain/service -name \"ToolService.java\" 2>/dev/null)",
+      "Read(//d/KTF_SERVER/src/main/java/com/root3games/ktf/domain/service/**)",
+      "Bash(cat D:/KTF_SERVER/src/main/java/com/root3games/ktf/domain/model/entity/User.java)",
+      "Read(//d/KTF_SERVER/src/main/java/com/root3games/ktf/domain/model/entity/**)"
     ]
   }
 }

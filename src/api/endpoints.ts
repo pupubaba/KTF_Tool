@@ -56,3 +56,8 @@ export async function getBlackList() {
   const res = await authClient.get<ApiResponse>('/api/Test/User/BlackList')
   return res.data
 }
+
+export async function findUserByGameName(userGameName: string) {
+  const res = await authClient.get<ApiResponse>(`/api/Test/Tool/FindByUserGameName/${encodeURIComponent(userGameName)}`)
+  return res.data
+}
