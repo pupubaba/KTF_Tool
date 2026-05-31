@@ -105,8 +105,9 @@ export const CURRENCIES: { id: number; name: string; desc: string }[] = [
 ]
 
 let _rowId = 0
+export function nextRowId(): string { return String(++_rowId) }
 export function newRow(): ItemRow {
-  return { id: String(++_rowId), itemType: 'Currency_', itemId: '', count: '1' }
+  return { id: nextRowId(), itemType: 'Currency_', itemId: '', count: '1' }
 }
 
 export function buildSendMailListFormat(rows: ItemRow[]): string {
@@ -114,9 +115,10 @@ export function buildSendMailListFormat(rows: ItemRow[]): string {
     .map(r => {
       const cat = ITEM_CATEGORIES.find(c => c.value === r.itemType)
       if (!cat) return ''
+      if (cat.needId && !r.itemId) return ''
       const key = cat.needId ? `${r.itemType}${r.itemId}` : 'Emblem'
       return `${key}:${r.count || '1'}`
     })
-    .filter(s => s && !s.startsWith(':'))
+    .filter(Boolean)
     .join(',')
 }

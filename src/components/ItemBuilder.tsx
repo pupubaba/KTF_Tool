@@ -5,6 +5,7 @@ import {
   CHARACTERS,
   buildSendMailListFormat,
   newRow,
+  nextRowId,
   type ItemRow,
   type ItemCategory,
 } from '../data/gameData'
@@ -55,7 +56,7 @@ export default function ItemBuilder({ rows, onChange, rawInput, onRawChange }: P
               return (
                 <div
                   key={row.id}
-                  style={{ display: 'grid', gridTemplateColumns: '500px 1fr 150px 36px', gap: 6, marginBottom: 6, alignItems: 'center' }}
+                  style={{ display: 'grid', gridTemplateColumns: '260px 260px 100px 36px', gap: 6, marginBottom: 6, alignItems: 'center' }}
                 >
                   <select
                     className="form-select"
@@ -125,11 +126,49 @@ export default function ItemBuilder({ rows, onChange, rawInput, onRawChange }: P
             })}
           </div>
 
-          <button
-            type="button"
-            className="btn btn-ghost btn-sm"
-            onClick={() => onChange([...rows, newRow()])}
-          >+ 아이템 추가</button>
+          <div className="flex gap-2" style={{ flexWrap: 'wrap', alignItems: 'center' }}>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => onChange([...rows, newRow()])}
+            >+ 아이템 추가</button>
+
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => {
+                const added = CURRENCIES.map(c => ({
+                  id: nextRowId(),
+                  itemType: 'Currency_',
+                  itemId: String(c.id),
+                  count: '1',
+                }))
+                onChange([...rows, ...added])
+              }}
+            >+ 모든 재화 추가</button>
+
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => {
+                const added = CHARACTERS.map(c => ({
+                  id: nextRowId(),
+                  itemType: 'Character_',
+                  itemId: String(c.id),
+                  count: '1',
+                }))
+                onChange([...rows, ...added])
+              }}
+            >+ 모든 영웅 추가</button>
+
+            {rows.length > 0 && (
+              <button
+                type="button"
+                className="btn btn-danger btn-sm"
+                onClick={() => onChange([])}
+              >전체 삭제</button>
+            )}
+          </div>
 
           {rows.length > 0 && (
             <div style={{ marginTop: 12 }}>
