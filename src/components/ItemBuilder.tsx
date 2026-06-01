@@ -56,7 +56,7 @@ export default function ItemBuilder({ rows, onChange, rawInput, onRawChange }: P
               return (
                 <div
                   key={row.id}
-                  style={{ display: 'grid', gridTemplateColumns: '260px 260px 100px 36px', gap: 6, marginBottom: 6, alignItems: 'center' }}
+                  style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 1fr) minmax(140px, 1fr) 90px 36px', gap: 6, marginBottom: 6, alignItems: 'center' }}
                 >
                   <select
                     className="form-select"

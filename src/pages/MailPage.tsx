@@ -53,7 +53,7 @@ export default function MailPage() {
 
     setLoading(true)
     try {
-      const res = await sendMail({
+      await sendMail({
         title,
         toId: uid,
         gettingItem,
@@ -63,8 +63,7 @@ export default function MailPage() {
         expireDate: new Date(expireDate).toISOString().replace('Z', ''),
         mailTemplateIndex,
       })
-      if (res.check) showResult('success', `유저 ${uid}에게 우편이 발송되었습니다`)
-      else showResult('error', res.message || '발송 실패')
+      showResult('success', `유저 ${uid}에게 우편이 발송되었습니다`)
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } }; message?: string }
       showResult('error', e.response?.data?.message || e.message || '오류 발생')
@@ -81,15 +80,14 @@ export default function MailPage() {
     const listFormat = rawInput.trim() || buildSendMailListFormat(itemRows)
     setLoading(true)
     try {
-      const res = await sendMailList({
+      await sendMailList({
         userId: uid,
         plusDay: batchPlusDay,
         title: batchTitle,
         gettingItem: listFormat,
         mailTemplateIndex: batchTemplateIndex,
       })
-      if (res.check) showResult('success', '우편 일괄 발송이 완료되었습니다')
-      else showResult('error', res.message || '발송 실패')
+      showResult('success', '우편 일괄 발송이 완료되었습니다')
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } }; message?: string }
       showResult('error', e.response?.data?.message || e.message || '오류 발생')

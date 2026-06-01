@@ -1,63 +1,94 @@
 import { publicClient, authClient } from './client'
 import type {
-  ApiResponse,
   LoginRequest,
+  LoginResponse,
+  UserResponse,
+  UserTypeValue,
+  AdminAccount,
+  CreateAdminRequest,
+  CurrencyItem,
+  HeroItem,
+  GuideInfo,
+  PurchaseItem,
+  MailItem,
   MailSendRequest,
   MailListSendRequest,
-  UserActionRequest,
 } from '../types'
 
+// ── Auth ──────────────────────────────────────────────────
 export async function login(data: LoginRequest) {
-  const res = await publicClient.post<ApiResponse>('/auth/Login', data)
+  const res = await publicClient.post<LoginResponse>('/api/auth/login', data)
   return res.data
 }
 
-export async function getServerStatus() {
-  const res = await authClient.get<{ response: Record<string, unknown> }>('/api/Test/status')
+// ── User ──────────────────────────────────────────────────
+export async function searchUser(params: { gameName?: string; socialId?: string; id?: number }) {
+  const res = await authClient.get<UserResponse>('/api/users', { params })
   return res.data
 }
 
+export async function getUserById(id: number) {
+  const res = await authClient.get<UserResponse>(`/api/users/${id}`)
+  return res.data
+}
+
+export async function changeUserType(id: number, type: UserTypeValue) {
+  const res = await authClient.post<{ message: string }>(`/api/users/${id}/type`, { type })
+  return res.data
+}
+
+// ── Admin Accounts ────────────────────────────────────────
+export async function getAdminAccounts() {
+  const res = await authClient.get<AdminAccount[]>('/api/admin/accounts')
+  return res.data
+}
+
+export async function createAdminAccount(data: CreateAdminRequest) {
+  const res = await authClient.post<AdminAccount>('/api/admin/accounts', data)
+  return res.data
+}
+
+export async function deleteAdminAccount(id: number) {
+  await authClient.delete(`/api/admin/accounts/${id}`)
+}
+
+// ── User Detail ───────────────────────────────────────────
+export async function getUserCurrency(userId: number) {
+  const res = await authClient.post<{ currency: CurrencyItem[] }>('/api/currency/myCurrency', { userId })
+  return res.data
+}
+
+export async function getUserHeroes(userId: number) {
+  // form-urlencoded 바인딩 (@RequestBody 없음)
+  const form = new URLSearchParams({ userId: String(userId) })
+  const res = await authClient.post<{ heroes: HeroItem[] }>('/api/hero/myHero', form)
+  return res.data
+}
+
+export async function getUserGuide(userId: number) {
+  const res = await authClient.post<{ guideInfo: GuideInfo }>('/api/Guide/myGuideInfo', { userId })
+  return res.data
+}
+
+export async function getUserPurchase(userId: number) {
+  // form-urlencoded 바인딩 (@RequestBody 없음)
+  const form = new URLSearchParams({ userId: String(userId) })
+  const res = await authClient.post<{ purchase: PurchaseItem[] }>('/api/shop/purchaseLog', form)
+  return res.data
+}
+
+// ── Mail ──────────────────────────────────────────────────
 export async function getUserMailBox(userId: number) {
-  const res = await authClient.post<ApiResponse>('/api/Test/Mail/GetMyMailBox', { userId })
+  const res = await authClient.post<{ myMailBoxResponseDtoList: MailItem[] }>('/api/mail/getMailBox', { userId })
   return res.data
 }
 
 export async function sendMail(data: MailSendRequest) {
-  const res = await authClient.post<ApiResponse>('/api/Test/Mail/SendMail', data)
+  const res = await authClient.post<{ mail: Record<string, unknown> }>('/api/mail/send', data)
   return res.data
 }
 
 export async function sendMailList(data: MailListSendRequest) {
-  const res = await authClient.post<ApiResponse>('/api/Test/Mail/SendMailList', data)
-  return res.data
-}
-
-export async function blackUser(data: UserActionRequest) {
-  const res = await authClient.post<ApiResponse>('/api/Test/User/BlackUser', data)
-  return res.data
-}
-
-export async function stopUser(data: UserActionRequest) {
-  const res = await authClient.post<ApiResponse>('/api/Test/User/StopUser', data)
-  return res.data
-}
-
-export async function whiteUser(data: UserActionRequest) {
-  const res = await authClient.post<ApiResponse>('/api/Test/User/WhiteUser', data)
-  return res.data
-}
-
-export async function normalUser(data: UserActionRequest) {
-  const res = await authClient.post<ApiResponse>('/api/Test/User/NormalUser', data)
-  return res.data
-}
-
-export async function getBlackList() {
-  const res = await authClient.get<ApiResponse>('/api/Test/User/BlackList')
-  return res.data
-}
-
-export async function findUserByGameName(userGameName: string) {
-  const res = await authClient.get<ApiResponse>(`/api/Test/Tool/FindByUserGameName/${encodeURIComponent(userGameName)}`)
+  const res = await authClient.post<{ mail: Record<string, unknown> }>('/api/mail/send-list', data)
   return res.data
 }

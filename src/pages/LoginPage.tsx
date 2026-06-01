@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
 import { setBaseURL } from '../api/client'
 import { login } from '../api/endpoints'
-import type { UserInfo } from '../types'
+import { decodeJwtPayload } from '../utils/jwt'
 
 export default function LoginPage() {
   const { server, servers, setServer, setAuth, updateServerUrl } = useApp()
@@ -11,7 +11,6 @@ export default function LoginPage() {
 
   const [socialId, setSocialId] = useState('')
   const [password, setPassword] = useState('')
-  const [serverNum, setServerNum] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [customUrls, setCustomUrls] = useState(servers.map(s => s.url))
@@ -20,39 +19,18 @@ export default function LoginPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
-
     setBaseURL(server.url)
 
     try {
-      const res = await login({
-        socialId,
-        password,
-        socialProvider: 'GOOGLE',
-        version: '1.0.0',
-        serverNum,
-      })
-
-      if (!res.check) {
-        setError(res.message || '로그인 실패')
-        return
-      }
-
-      const response = res.response as Record<string, unknown>
-      const jwt = response.jwt as string
-      const userInfoRaw = response.userInfo as Record<string, unknown>
-
-      const userInfo: UserInfo = {
-        id: userInfoRaw.id as number,
-        socialId: userInfoRaw.socialId as string,
-        userGameName: userInfoRaw.userGameName as string | undefined,
-        serverNum,
-      }
-
-      setAuth(jwt, userInfo)
+      const res = await login({ socialId, password })
+      const payload = decodeJwtPayload(res.token)
+      const roles = String(payload.roles ?? '').split(',').filter(Boolean)
+      setAuth(res.token, { socialId, roles })
       navigate('/users')
     } catch (err: unknown) {
-      const e = err as { response?: { data?: { message?: string } }; message?: string }
-      setError(e.response?.data?.message || e.message || '서버 연결 오류')
+      const e = err as { response?: { data?: { message?: string }; status?: number }; message?: string }
+      if (e.response?.status === 401) setError('아이디 또는 비밀번호가 올바르지 않습니다')
+      else setError(e.response?.data?.message || e.message || '서버 연결 오류')
     } finally {
       setLoading(false)
     }
@@ -84,11 +62,7 @@ export default function LoginPage() {
 
         <div className="form-group">
           <label className="form-label">서버 선택</label>
-          <select
-            className="form-select"
-            value={server.name}
-            onChange={e => handleServerChange(e.target.value)}
-          >
+          <select className="form-select" value={server.name} onChange={e => handleServerChange(e.target.value)}>
             {servers.map(s => (
               <option key={s.name} value={s.name}>{s.name}</option>
             ))}
@@ -130,17 +104,6 @@ export default function LoginPage() {
               onChange={e => setPassword(e.target.value)}
               placeholder="비밀번호 입력"
               required
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">서버 번호</label>
-            <input
-              className="form-input"
-              type="number"
-              value={serverNum}
-              onChange={e => setServerNum(Number(e.target.value))}
-              min={1}
             />
           </div>
 

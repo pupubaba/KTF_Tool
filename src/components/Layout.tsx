@@ -26,10 +26,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   function handleServerChange(name: string) {
     const found = servers.find(s => s.name === name)
-    if (found) {
-      setServer(found)
-      setBaseURL(found.url)
-    }
+    if (!found || found.name === server.name) return
+    setServer(found)
+    setBaseURL(found.url)
+    logout()
+    navigate('/login')
   }
 
   function handleLogout() {
@@ -48,6 +49,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <nav className="sidebar-nav">
           <NavItem to="/users" label="유저 관리" icon="👤" />
           <NavItem to="/mail" label="우편 발송" icon="✉️" />
+          {userInfo?.roles.includes('ROLE_ADMIN') && (
+            <NavItem to="/admin" label="관리자 계정" icon="🔑" />
+          )}
         </nav>
 
         <div className="sidebar-footer">
@@ -66,9 +70,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </select>
 
           {userInfo && (
-            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 8 }}>
-              {userInfo.userGameName ?? userInfo.socialId}
-              <span style={{ marginLeft: 6, color: 'var(--text-muted)' }}>#{userInfo.id}</span>
+            <div style={{ marginBottom: 8 }}>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 4 }}>
+                {userInfo.socialId}
+              </div>
+              {userInfo.roles.map(role => {
+                const isAdmin = role === 'ROLE_ADMIN'
+                return (
+                  <span
+                    key={role}
+                    className={`badge ${isAdmin ? 'badge-red' : 'badge-blue'}`}
+                    style={{ fontSize: 10 }}
+                  >
+                    {isAdmin ? 'ADMIN' : 'PM'}
+                  </span>
+                )
+              })}
             </div>
           )}
 

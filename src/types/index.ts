@@ -10,26 +10,87 @@ export interface AppState {
 }
 
 export interface UserInfo {
-  id: number
   socialId: string
-  userGameName?: string
-  serverNum: number
+  roles: string[]
 }
 
+// ── Auth ──────────────────────────────────────────────────
+export interface LoginRequest {
+  socialId: string
+  password: string
+}
+
+export interface LoginResponse {
+  token: string
+}
+
+// ── User ──────────────────────────────────────────────────
+export interface UserResponse {
+  id: number
+  socialId: string
+  userGameName: string
+  level: number
+  exp: number
+  serverNum: number
+  userType: number
+  mileage: number
+  attendanceCount: number
+  totalPurchase: number
+  createdDate: string
+  lastloginDate: string | null
+  previousLoginDate: string | null
+}
+
+export type UserTypeValue = 'normal' | 'white' | 'black' | 'stop'
+
+// ── Admin Accounts ────────────────────────────────────────
+export interface AdminAccount {
+  id: number
+  socialId: string
+  roles: string[]
+  createdDate: string
+}
+
+export interface CreateAdminRequest {
+  socialId: string
+  password: string
+  role: string
+}
+
+// ── User Detail ───────────────────────────────────────────
+export interface CurrencyItem {
+  currencyName: string
+  currentCount: number
+  dayLimit: number
+}
+
+export interface HeroItem {
+  heroName: string
+  currentCount: number
+  awakenStep: string
+  level: number
+  activeSkillLevel: number
+}
+
+export interface GuideInfo {
+  currentQuestId: number
+  isClearable: boolean
+  allClear: boolean
+}
+
+export interface PurchaseItem {
+  productId: string
+  platform: string
+  date: string
+}
+
+// ── Mail (old endpoints — kept as-is) ────────────────────
 export interface ApiResponse<T = unknown> {
   status: number
   errorCode: number
   message: string
   check: boolean
   response: T
-}
-
-export interface LoginRequest {
-  socialId: string
-  password: string
-  socialProvider: string
-  version: string
-  serverNum: number
 }
 
 export interface MailSendRequest {
@@ -49,11 +110,6 @@ export interface MailListSendRequest {
   title: string
   gettingItem: string
   mailTemplateIndex: number
-}
-
-export interface UserActionRequest {
-  userId: number
-  type?: number
 }
 
 export interface MailItem {
