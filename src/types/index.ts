@@ -121,3 +121,61 @@ export interface MailItem {
   mailType: number
   received: boolean
 }
+
+// ── Ranking ───────────────────────────────────────────────
+export interface ChannelInfo {
+  channelId: number
+  channelName: string
+  currentNum: number
+  maxNum: number
+}
+
+export interface DamageDungeonRankItem {
+  ranking: number
+  userId: number
+  userGameName: string
+  level: number
+  point: number
+  thumbnail: number
+}
+
+export interface GuildRankItem {
+  ranking: number
+  guildId: number
+  guildName: string
+  leaderName: string
+  level: number
+  joinNum: number
+  point: number
+  guildColor: number
+  guildPattern: number
+}
+
+export interface GuildInfo {
+  guildId: number
+  guildName: string
+  level: number
+  joinNum: number
+}
+
+export interface GuildBossRankItem {
+  ranking: number
+  userId: number
+  userGameName: string
+  level: number
+  point: number
+  thumbnail: number
+}
+
+// ── Metrics ───────────────────────────────────────────────
+export interface DailyMetrics {
+  date: string
+  dau: number
+  mau: number
+  newUserCount: number
+  totalRevenue: number
+  purchaseCount: number
+  payingUserCount: number
+  arpu: number
+  arppu: number
+}

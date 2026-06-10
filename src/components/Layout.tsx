@@ -49,6 +49,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <nav className="sidebar-nav">
           <NavItem to="/users" label="유저 관리" icon="👤" />
           <NavItem to="/mail" label="우편 발송" icon="✉️" />
+          <NavItem to="/ranking" label="실시간 랭킹" icon="🏆" />
+          {userInfo?.roles.includes('ROLE_ADMIN') && (
+            <NavItem to="/metrics" label="게임 지표" icon="📊" />
+          )}
           {userInfo?.roles.includes('ROLE_ADMIN') && (
             <NavItem to="/admin" label="관리자 계정" icon="🔑" />
           )}

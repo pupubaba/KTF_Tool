@@ -13,6 +13,12 @@ import type {
   MailItem,
   MailSendRequest,
   MailListSendRequest,
+  ChannelInfo,
+  DamageDungeonRankItem,
+  GuildRankItem,
+  GuildInfo,
+  GuildBossRankItem,
+  DailyMetrics,
 } from '../types'
 
 // ── Auth ──────────────────────────────────────────────────
@@ -90,5 +96,37 @@ export async function sendMail(data: MailSendRequest) {
 
 export async function sendMailList(data: MailListSendRequest) {
   const res = await authClient.post<{ mail: Record<string, unknown> }>('/api/mail/send-list', data)
+  return res.data
+}
+
+// ── Ranking ───────────────────────────────────────────────
+export async function getRankingChannels() {
+  const res = await authClient.get<ChannelInfo[]>('/api/ranking/channels')
+  return res.data
+}
+
+export async function getDamageDungeonRanking(channel: number) {
+  const res = await authClient.get<DamageDungeonRankItem[]>('/api/ranking/damage-dungeon', { params: { channel } })
+  return res.data
+}
+
+export async function getGuildRanking(channel: number) {
+  const res = await authClient.get<GuildRankItem[]>('/api/ranking/guild', { params: { channel } })
+  return res.data
+}
+
+export async function getGuildBossGuilds(channel: number) {
+  const res = await authClient.get<GuildInfo[]>('/api/ranking/guild-boss/guilds', { params: { channel } })
+  return res.data
+}
+
+export async function getGuildBossRanking(guildId: number) {
+  const res = await authClient.get<GuildBossRankItem[]>('/api/ranking/guild-boss', { params: { guildId } })
+  return res.data
+}
+
+// ── Metrics ───────────────────────────────────────────────
+export async function getDailyMetrics(from: string, to: string) {
+  const res = await authClient.get<DailyMetrics[]>('/api/metrics/daily', { params: { from, to } })
   return res.data
 }

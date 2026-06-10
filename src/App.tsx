@@ -5,6 +5,8 @@ import LoginPage from './pages/LoginPage'
 import UsersPage from './pages/UsersPage'
 import MailPage from './pages/MailPage'
 import AdminPage from './pages/AdminPage'
+import RankingPage from './pages/RankingPage'
+import MetricsPage from './pages/MetricsPage'
 import { setBaseURL } from './api/client'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -22,6 +24,8 @@ function AppRoutes() {
       <Route path="/login" element={jwt ? <Navigate to="/users" replace /> : <LoginPage />} />
       <Route path="/users" element={<ProtectedRoute><UsersPage /></ProtectedRoute>} />
       <Route path="/mail" element={<ProtectedRoute><MailPage /></ProtectedRoute>} />
+      <Route path="/ranking" element={<ProtectedRoute><RankingPage /></ProtectedRoute>} />
+      <Route path="/metrics" element={<ProtectedRoute><MetricsPage /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to={jwt ? '/users' : '/login'} replace />} />
     </Routes>
