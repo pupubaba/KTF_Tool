@@ -10,21 +10,22 @@ const USER_TYPE_LABEL: Record<number, { label: string; cls: string }> = {
   4: { label: '정지',         cls: 'badge-yellow' },
 }
 
-type SearchType = 'gameName' | 'socialId'
+type SearchType = 'gameName' | 'socialId' | 'id'
 
 interface Props {
   userId: string
+  foundUser: UserResponse | null | 'not_found'
+  setFoundUser: React.Dispatch<React.SetStateAction<UserResponse | null | 'not_found'>>
   onUserFound: (id: string) => void
   onResult: (type: 'success' | 'error', msg: string) => void
 }
 
-export default function ActionTab({ userId, onUserFound, onResult }: Props) {
+export default function ActionTab({ userId, foundUser, setFoundUser, onUserFound, onResult }: Props) {
   const { userInfo } = useApp()
   const isAdmin = userInfo?.roles.includes('ROLE_ADMIN') ?? false
 
   const [searchType, setSearchType]   = useState<SearchType>('gameName')
   const [searchQuery, setSearchQuery] = useState('')
-  const [foundUser, setFoundUser]     = useState<UserResponse | null | 'not_found'>('not_found')
   const [searching, setSearching]     = useState(false)
   const [loading, setLoading]         = useState(false)
   const [levelInput, setLevelInput]   = useState('')
@@ -38,7 +39,9 @@ export default function ActionTab({ userId, onUserFound, onResult }: Props) {
     try {
       const params = searchType === 'gameName'
         ? { gameName: searchQuery.trim() }
-        : { socialId: searchQuery.trim() }
+        : searchType === 'socialId'
+        ? { socialId: searchQuery.trim() }
+        : { id: Number(searchQuery.trim()) }
       const user = await searchUser(params)
       setFoundUser(user)
       onUserFound(String(user.id))
@@ -82,6 +85,7 @@ export default function ActionTab({ userId, onUserFound, onResult }: Props) {
       await changeUserLevel(uid, lv)
       onResult('success', `유저 ${uid} 레벨 → ${lv} 변경 완료`)
       setLevelInput('')
+      setFoundUser(prev => prev && prev !== 'not_found' ? { ...prev, level: lv } : prev)
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string }; status?: number }; message?: string }
       if (e.response?.status === 403) onResult('error', '권한이 없습니다 (ROLE_ADMIN 필요)')
@@ -105,12 +109,13 @@ export default function ActionTab({ userId, onUserFound, onResult }: Props) {
             >
               <option value="gameName">닉네임</option>
               <option value="socialId">소셜 ID</option>
+              <option value="id">유저 ID</option>
             </select>
             <input
               className="form-input"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              placeholder={searchType === 'gameName' ? '게임 닉네임 입력' : '소셜 ID 입력'}
+              placeholder={searchType === 'gameName' ? '게임 닉네임 입력' : searchType === 'socialId' ? '소셜 ID 입력' : '유저 ID 입력 (숫자)'}
             />
             <button className="btn btn-primary" type="submit" disabled={searching} style={{ whiteSpace: 'nowrap' }}>
               {searching ? <><span className="spinner" /> 검색 중</> : '검색'}
@@ -149,22 +154,7 @@ export default function ActionTab({ userId, onUserFound, onResult }: Props) {
         )}
       </div>
 
-      <div className="card">
-        <div className="card-title">유저 ID 직접 입력</div>
-        <div className="form-group">
-          <label className="form-label">유저 ID</label>
-          <input
-            className="form-input"
-            type="number"
-            value={userId}
-            onChange={e => onUserFound(e.target.value)}
-            placeholder="예: 1001"
-            style={{ maxWidth: 200 }}
-          />
-        </div>
-      </div>
-
-      <div className="card">
+<div className="card">
         <div className="card-title">제재 / 해제</div>
         <div className="btn-group mt-4">
           <button className="btn btn-danger"  onClick={() => handleAction('black')}  disabled={loading}>블랙 처리</button>

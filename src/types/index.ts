@@ -74,7 +74,7 @@ export interface HeroItem {
 
 export interface GuideInfo {
   currentQuestId: number
-  isClearable: boolean
+  clearable: boolean
   allClear: boolean
 }
 

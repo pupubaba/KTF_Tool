@@ -6,7 +6,7 @@ import GuideTab    from './users/GuideTab'
 import PurchaseTab from './users/PurchaseTab'
 import ShopTab     from './users/ShopTab'
 import MailboxTab  from './users/MailboxTab'
-import type { CurrencyItem, HeroItem, GuideInfo, PurchaseItem, ShopPurchaseLog, MailItem } from '../types'
+import type { CurrencyItem, HeroItem, GuideInfo, PurchaseItem, ShopPurchaseLog, MailItem, UserResponse } from '../types'
 
 type TabType = 'action' | 'currency' | 'hero' | 'guide' | 'purchase' | 'shop' | 'mailbox'
 interface ResultState { type: 'success' | 'error'; message: string }
@@ -25,6 +25,8 @@ export default function UsersPage() {
   const [userId, setUserId]   = useState('')
   const [activeTab, setActiveTab] = useState<TabType>('action')
   const [result, setResult]   = useState<ResultState | null>(null)
+
+  const [foundUser, setFoundUser] = useState<UserResponse | null | 'not_found'>('not_found')
 
   // 탭간 캐시 (null = 미로드, [] = 로드 완료)
   const [currencies, setCurrencies] = useState<CurrencyItem[] | null>(null)
@@ -69,7 +71,7 @@ export default function UsersPage() {
           ))}
         </div>
 
-        {activeTab === 'action'   && <ActionTab   userId={userId} onUserFound={handleUserFound} onResult={showResult} />}
+        {activeTab === 'action'   && <ActionTab   userId={userId} foundUser={foundUser} setFoundUser={setFoundUser} onUserFound={handleUserFound} onResult={showResult} />}
         {activeTab === 'currency' && <CurrencyTab userId={userId} data={currencies} setData={setCurrencies} onResult={showResult} />}
         {activeTab === 'hero'     && <HeroTab     userId={userId} data={heroes}     setData={setHeroes}     onResult={showResult} />}
         {activeTab === 'guide'    && <GuideTab    userId={userId} data={guide}      setData={setGuide}      onResult={showResult} />}

@@ -81,8 +81,8 @@ export default function GuideTab({ userId, data, setData, onResult }: Props) {
             <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--primary)' }}>{data.currentQuestId}</div>
           )}
           {card('클리어 가능',
-            <span className={`badge ${data.isClearable ? 'badge-green' : 'badge-yellow'}`} style={{ fontSize: 14 }}>
-              {data.isClearable ? '가능' : '불가'}
+            <span className={`badge ${data.clearable ? 'badge-green' : 'badge-yellow'}`} style={{ fontSize: 14 }}>
+              {data.clearable ? '가능' : '불가'}
             </span>
           )}
           {card('전체 클리어',
