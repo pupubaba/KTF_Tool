@@ -84,6 +84,17 @@ export interface PurchaseItem {
   date: string
 }
 
+export interface ShopPurchaseLog {
+  id: number
+  useridUser: number
+  shopType: string
+  goodsId: number
+  count: number
+  currencyId: number
+  spendAmount: number
+  createddate: string
+}
+
 // ── Mail (old endpoints — kept as-is) ────────────────────
 export interface ApiResponse<T = unknown> {
   status: number

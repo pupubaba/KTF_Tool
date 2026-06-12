@@ -77,7 +77,7 @@ export default function ItemBuilder({ rows, onChange, rawInput, onRawChange }: P
                       <option value="">-- 재화 선택 --</option>
                       {CURRENCIES.map(c => (
                         <option key={c.id} value={String(c.id)}>
-                          {c.id} · {c.desc} ({c.name})
+                          {c.id} · {c.name} ({c.desc})
                         </option>
                       ))}
                     </select>

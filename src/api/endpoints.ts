@@ -10,6 +10,7 @@ import type {
   HeroItem,
   GuideInfo,
   PurchaseItem,
+  ShopPurchaseLog,
   MailItem,
   MailSendRequest,
   MailListSendRequest,
@@ -40,6 +41,11 @@ export async function getUserById(id: number) {
 
 export async function changeUserType(id: number, type: UserTypeValue) {
   const res = await authClient.post<{ message: string }>(`/api/users/${id}/type`, { type })
+  return res.data
+}
+
+export async function changeUserLevel(id: number, level: number) {
+  const res = await authClient.post<{ message: string }>(`/api/users/${id}/level`, { level })
   return res.data
 }
 
@@ -76,10 +82,19 @@ export async function getUserGuide(userId: number) {
   return res.data
 }
 
+export async function setGuideClearable(userId: number) {
+  await authClient.post('/api/Guide/setClearable', { userId })
+}
+
 export async function getUserPurchase(userId: number) {
   // form-urlencoded 바인딩 (@RequestBody 없음)
   const form = new URLSearchParams({ userId: String(userId) })
   const res = await authClient.post<{ purchase: PurchaseItem[] }>('/api/shop/purchaseLog', form)
+  return res.data
+}
+
+export async function getShopPurchaseLogs(userId: number) {
+  const res = await authClient.get<ShopPurchaseLog[]>(`/api/shop/purchase-logs/${userId}`)
   return res.data
 }
 
