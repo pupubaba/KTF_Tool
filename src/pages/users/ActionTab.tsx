@@ -80,6 +80,7 @@ export default function ActionTab({ userId, foundUser, setFoundUser, onUserFound
     const lv  = Number(levelInput)
     if (!uid) { onResult('error', '유저 ID를 입력하세요'); return }
     if (!lv || lv < 1 || lv > 100) { onResult('error', '레벨은 1~100 사이여야 합니다'); return }
+    if (!window.confirm(`유저 ${uid}의 레벨을 ${lv}로 변경하시겠습니까?`)) return
     setLevelLoading(true)
     try {
       await changeUserLevel(uid, lv)

@@ -6,9 +6,10 @@ import GuideTab    from './users/GuideTab'
 import PurchaseTab from './users/PurchaseTab'
 import ShopTab     from './users/ShopTab'
 import MailboxTab  from './users/MailboxTab'
-import type { CurrencyItem, HeroItem, GuideInfo, PurchaseItem, ShopPurchaseLog, MailItem, UserResponse } from '../types'
+import DungeonTab  from './users/DungeonTab'
+import type { CurrencyItem, HeroItem, GuideInfo, PurchaseItem, ShopPurchaseLog, MailItem, UserResponse, DungeonInfo } from '../types'
 
-type TabType = 'action' | 'currency' | 'hero' | 'guide' | 'purchase' | 'shop' | 'mailbox'
+type TabType = 'action' | 'currency' | 'hero' | 'guide' | 'purchase' | 'shop' | 'mailbox' | 'dungeon'
 interface ResultState { type: 'success' | 'error'; message: string }
 
 const TABS: [TabType, string][] = [
@@ -19,6 +20,7 @@ const TABS: [TabType, string][] = [
   ['purchase', 'IAP 결제'],
   ['shop',     '인게임 상점'],
   ['mailbox',  '우편함'],
+  ['dungeon',  '던전'],
 ]
 
 export default function UsersPage() {
@@ -35,6 +37,7 @@ export default function UsersPage() {
   const [purchases, setPurchases]   = useState<PurchaseItem[] | null>(null)
   const [shopLogs, setShopLogs]     = useState<ShopPurchaseLog[] | null>(null)
   const [mailBox, setMailBox]       = useState<MailItem[] | null>(null)
+  const [dungeon, setDungeon]       = useState<DungeonInfo | null>(null)
 
   function showResult(type: 'success' | 'error', message: string) {
     setResult({ type, message })
@@ -45,7 +48,7 @@ export default function UsersPage() {
     setUserId(id)
     // 유저가 바뀌면 캐시 초기화
     setCurrencies(null); setHeroes(null); setGuide(null)
-    setPurchases(null);  setShopLogs(null); setMailBox(null)
+    setPurchases(null);  setShopLogs(null); setMailBox(null); setDungeon(null)
   }
 
   return (
@@ -78,6 +81,7 @@ export default function UsersPage() {
         {activeTab === 'purchase' && <PurchaseTab userId={userId} data={purchases}  setData={setPurchases}  onResult={showResult} />}
         {activeTab === 'shop'     && <ShopTab     userId={userId} data={shopLogs}   setData={setShopLogs}   onResult={showResult} />}
         {activeTab === 'mailbox'  && <MailboxTab  userId={userId} data={mailBox}    setData={setMailBox}    onResult={showResult} />}
+        {activeTab === 'dungeon'  && <DungeonTab  userId={userId} data={dungeon}    setData={setDungeon}    onResult={showResult} />}
       </div>
     </>
   )

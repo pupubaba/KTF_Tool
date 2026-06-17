@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useApp } from '../contexts/AppContext'
 import { setBaseURL } from '../api/client'
+import { getServerStatus, changeServerStatus } from '../api/endpoints'
 
 interface NavItemProps {
   to: string
@@ -23,6 +25,33 @@ function NavItem({ to, label, icon }: NavItemProps) {
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { server, servers, setServer, userInfo, logout } = useApp()
   const navigate = useNavigate()
+  const isAdmin = userInfo?.roles.includes('ROLE_ADMIN') ?? false
+
+  const [serverStatus, setServerStatus] = useState<string | null>(null)
+  const [statusLoading, setStatusLoading] = useState(false)
+
+  useEffect(() => {
+    getServerStatus()
+      .then(res => setServerStatus(res.serverStatus))
+      .catch(() => {})
+  }, [server])
+
+  async function handleToggleStatus() {
+    const next = serverStatus === '점검' ? 'normal' : 'check'
+    const nextLabel = next === 'check' ? '점검' : '정상'
+    if (!window.confirm(`서버 상태를 [${nextLabel}]으로 변경하시겠습니까?`)) return
+    setStatusLoading(true)
+    try {
+      await changeServerStatus(next)
+      const res = await getServerStatus()
+      setServerStatus(res.serverStatus)
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: { message?: string } }; message?: string }
+      alert(e.response?.data?.message || e.message || '서버 상태 변경 실패')
+    } finally {
+      setStatusLoading(false)
+    }
+  }
 
   function handleServerChange(name: string) {
     const found = servers.find(s => s.name === name)
@@ -62,6 +91,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="server-badge">
             서버: <strong>{server.name}</strong>
           </div>
+
+          {serverStatus && (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+              <span className={`badge ${serverStatus === '점검' ? 'badge-yellow' : 'badge-green'}`} style={{ fontSize: 11 }}>
+                서버 상태: {serverStatus}
+              </span>
+              {isAdmin && (
+                <button
+                  className="btn btn-ghost btn-sm"
+                  onClick={handleToggleStatus}
+                  disabled={statusLoading}
+                  style={{ fontSize: 11, padding: '2px 8px' }}
+                >
+                  {statusLoading ? '변경 중...' : (serverStatus === '점검' ? '정상으로 전환' : '점검으로 전환')}
+                </button>
+              )}
+            </div>
+          )}
+
           <select
             className="form-select"
             value={server.name}

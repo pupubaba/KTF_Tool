@@ -178,6 +178,27 @@ export interface GuildBossRankItem {
   thumbnail: number
 }
 
+// ── Dungeon ───────────────────────────────────────────────
+export interface DungeonInfo {
+  allDungeonStage: number
+  celestialDungeonStage: number
+  humanDungeonStage: number
+  guardianDungeonStage: number
+  crusherDungeonStage: number
+  equipmentDungeonStage: number
+  goldDungeonStage: number
+  damageDungeonStage: number
+  constellationDungeonStage: number
+  damageDungeonStep: number
+}
+
+// ── Server Status ─────────────────────────────────────────
+export interface ServerStatusResponse {
+  serverStatus: string
+}
+
+export type ServerStatusValue = 'normal' | 'check'
+
 // ── Metrics ───────────────────────────────────────────────
 export interface DailyMetrics {
   date: string
@@ -189,4 +210,16 @@ export interface DailyMetrics {
   payingUserCount: number
   arpu: number
   arppu: number
+}
+
+export interface DailyRetentionMetrics {
+  cohortDate: string
+  cohortSize: number
+  d1Count: number;  d1Rate: number
+  d3Count: number;  d3Rate: number
+  d5Count: number;  d5Rate: number
+  d7Count: number;  d7Rate: number
+  d14Count: number; d14Rate: number
+  d21Count: number; d21Rate: number
+  d30Count: number; d30Rate: number
 }

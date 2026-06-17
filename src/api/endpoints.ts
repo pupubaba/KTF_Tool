@@ -19,7 +19,11 @@ import type {
   GuildRankItem,
   GuildInfo,
   GuildBossRankItem,
+  DungeonInfo,
   DailyMetrics,
+  DailyRetentionMetrics,
+  ServerStatusResponse,
+  ServerStatusValue,
 } from '../types'
 
 // ── Auth ──────────────────────────────────────────────────
@@ -86,6 +90,11 @@ export async function setGuideClearable(userId: number) {
   await authClient.post('/api/Guide/setClearable', { userId })
 }
 
+export async function setGuideQuest(userId: number, questId: number) {
+  const res = await authClient.post<{ message: string }>('/api/Guide/setQuest', { userId, questId })
+  return res.data
+}
+
 export async function getUserPurchase(userId: number) {
   // form-urlencoded 바인딩 (@RequestBody 없음)
   const form = new URLSearchParams({ userId: String(userId) })
@@ -140,8 +149,35 @@ export async function getGuildBossRanking(guildId: number) {
   return res.data
 }
 
+// ── Dungeon ───────────────────────────────────────────────
+export async function getDungeonInfo(userId: number) {
+  const res = await authClient.get<DungeonInfo>(`/api/dungeon/users/${userId}`)
+  return res.data
+}
+
+export async function patchDungeonInfo(userId: number, dungeonType: string, value: number) {
+  const res = await authClient.patch<{ message: string }>(`/api/dungeon/users/${userId}`, { dungeonType, value })
+  return res.data
+}
+
 // ── Metrics ───────────────────────────────────────────────
 export async function getDailyMetrics(from: string, to: string) {
   const res = await authClient.get<DailyMetrics[]>('/api/metrics/daily', { params: { from, to } })
+  return res.data
+}
+
+export async function getRetentionMetrics(from: string, to: string) {
+  const res = await authClient.get<DailyRetentionMetrics[]>('/api/metrics/retention', { params: { from, to } })
+  return res.data
+}
+
+// ── Server Status ─────────────────────────────────────────
+export async function getServerStatus() {
+  const res = await authClient.get<ServerStatusResponse>('/api/server-status')
+  return res.data
+}
+
+export async function changeServerStatus(status: ServerStatusValue) {
+  const res = await authClient.post<{ message: string }>('/api/server-status', { status })
   return res.data
 }
