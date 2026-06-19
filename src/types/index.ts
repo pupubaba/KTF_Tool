@@ -239,4 +239,5 @@ export interface DailyRetentionMetrics {
 export interface PayingUserResponse {
   id: number
   userGameName: string
+  totalAmount: number
 }

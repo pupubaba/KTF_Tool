@@ -42,6 +42,7 @@ export default function PayingUsersModal({ date, onClose, onUserClick }: Props) 
                 <tr>
                   <th style={{ width: 80 }}>유저 ID</th>
                   <th>닉네임</th>
+                  <th style={{ width: 100, textAlign: 'right' }}>결제액</th>
                 </tr>
               </thead>
               <tbody>
@@ -49,6 +50,7 @@ export default function PayingUsersModal({ date, onClose, onUserClick }: Props) 
                   <tr key={u.id} onClick={() => onUserClick(u.id)} style={{ cursor: 'pointer' }}>
                     <td><code style={{ fontSize: 11 }}>{u.id}</code></td>
                     <td>{u.userGameName}</td>
+                    <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>₩{u.totalAmount.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
