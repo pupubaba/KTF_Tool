@@ -1,6 +1,10 @@
 import { useState } from 'react'
 import { getDailyMetrics, getRetentionMetrics } from '../api/endpoints'
+import PayingUsersModal from '../components/PayingUsersModal'
+import UserActionModal from '../components/UserActionModal'
 import type { DailyMetrics, DailyRetentionMetrics } from '../types'
+
+interface ResultState { type: 'success' | 'error'; message: string }
 
 type TabType = 'daily' | 'retention'
 
@@ -18,6 +22,9 @@ const RETENTION_DAYS = [1, 3, 5, 7, 14, 21, 30] as const
 
 export default function MetricsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('daily')
+  const [payingUsersDate, setPayingUsersDate] = useState<string | null>(null)
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
+  const [result, setResult] = useState<ResultState | null>(null)
 
   const [from, setFrom] = useState(daysAgo(6))
   const [to, setTo] = useState(today())
@@ -30,6 +37,11 @@ export default function MetricsPage() {
   const [retentionLoading, setRetentionLoading] = useState(false)
   const [retentionError, setRetentionError] = useState<string | null>(null)
   const [retentionSearched, setRetentionSearched] = useState(false)
+
+  function showResult(type: 'success' | 'error', message: string) {
+    setResult({ type, message })
+    setTimeout(() => setResult(null), 4000)
+  }
 
   async function handleSearch(e: React.FormEvent) {
     e.preventDefault()
@@ -80,6 +92,11 @@ export default function MetricsPage() {
       </div>
       <div className="page-body">
         {currentError && <div className="alert alert-error">{currentError}</div>}
+        {result && (
+          <div className={`alert alert-${result.type === 'success' ? 'success' : 'error'}`}>
+            {result.message}
+          </div>
+        )}
 
         <div className="tabs">
           <button className={`tab-btn ${activeTab === 'daily' ? 'active' : ''}`} onClick={() => setActiveTab('daily')}>일별 지표</button>
@@ -170,7 +187,18 @@ export default function MetricsPage() {
                             <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{r.newUserCount.toLocaleString()}</td>
                             <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>₩{r.totalRevenue.toLocaleString()}</td>
                             <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{r.purchaseCount.toLocaleString()}</td>
-                            <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{r.payingUserCount.toLocaleString()}</td>
+                            <td
+                              style={{
+                                textAlign: 'right',
+                                fontVariantNumeric: 'tabular-nums',
+                                cursor: r.payingUserCount > 0 ? 'pointer' : 'default',
+                                textDecoration: r.payingUserCount > 0 ? 'underline' : 'none',
+                                color: r.payingUserCount > 0 ? 'var(--primary)' : undefined,
+                              }}
+                              onClick={() => r.payingUserCount > 0 && setPayingUsersDate(r.date)}
+                            >
+                              {r.payingUserCount.toLocaleString()}
+                            </td>
                             <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{r.arpu.toFixed(0)}</td>
                             <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{r.arppu.toFixed(0)}</td>
                           </tr>
@@ -230,6 +258,22 @@ export default function MetricsPage() {
           </>
         )}
       </div>
+
+      {payingUsersDate && (
+        <PayingUsersModal
+          date={payingUsersDate}
+          onClose={() => setPayingUsersDate(null)}
+          onUserClick={setSelectedUserId}
+        />
+      )}
+
+      {selectedUserId != null && (
+        <UserActionModal
+          userId={selectedUserId}
+          onClose={() => setSelectedUserId(null)}
+          onResult={showResult}
+        />
+      )}
     </>
   )
 }

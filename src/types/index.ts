@@ -95,6 +95,18 @@ export interface ShopPurchaseLog {
   createddate: string
 }
 
+export interface GatchaLog {
+  id: number
+  userIdUser: number
+  gachaType: string
+  isAD: boolean
+  pullIndex: number
+  rewardType: number
+  tableId: number
+  count: number
+  createddate: string
+}
+
 // ── Mail (old endpoints — kept as-is) ────────────────────
 export interface ApiResponse<T = unknown> {
   status: number
@@ -222,4 +234,9 @@ export interface DailyRetentionMetrics {
   d14Count: number; d14Rate: number
   d21Count: number; d21Rate: number
   d30Count: number; d30Rate: number
+}
+
+export interface PayingUserResponse {
+  id: number
+  userGameName: string
 }

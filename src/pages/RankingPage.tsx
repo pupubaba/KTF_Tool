@@ -6,6 +6,7 @@ import {
   getGuildBossGuilds,
   getGuildBossRanking,
 } from '../api/endpoints'
+import UserActionModal from '../components/UserActionModal'
 import type {
   ChannelInfo,
   DamageDungeonRankItem,
@@ -13,6 +14,8 @@ import type {
   GuildInfo,
   GuildBossRankItem,
 } from '../types'
+
+interface ResultState { type: 'success' | 'error'; message: string }
 
 type RankTab = 'damage' | 'guild' | 'guild-boss'
 
@@ -23,6 +26,8 @@ const TAB_LABELS: { key: RankTab; label: string }[] = [
 ]
 
 export default function RankingPage() {
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
+  const [result, setResult] = useState<ResultState | null>(null)
   const [channels, setChannels] = useState<ChannelInfo[]>([])
   const [selectedChannel, setSelectedChannel] = useState<number | null>(null)
   const [tab, setTab] = useState<RankTab>('damage')
@@ -112,6 +117,11 @@ export default function RankingPage() {
     loadGuildBossRanking(guildId)
   }
 
+  function showResult(type: 'success' | 'error', message: string) {
+    setResult({ type, message })
+    setTimeout(() => setResult(null), 4000)
+  }
+
   return (
     <>
       <div className="page-header">
@@ -120,6 +130,11 @@ export default function RankingPage() {
       </div>
       <div className="page-body">
         {error && <div className="alert alert-error">{error}</div>}
+        {result && (
+          <div className={`alert alert-${result.type === 'success' ? 'success' : 'error'}`}>
+            {result.message}
+          </div>
+        )}
 
         {/* 채널 선택 */}
         <div className="card" style={{ marginBottom: 16 }}>
@@ -183,23 +198,31 @@ export default function RankingPage() {
           ) : (
             <>
               {tab === 'damage' && (
-                <DamageDungeonTable rows={damageRanking} />
+                <DamageDungeonTable rows={damageRanking} onUserClick={setSelectedUserId} />
               )}
               {tab === 'guild' && (
                 <GuildTable rows={guildRanking} />
               )}
               {tab === 'guild-boss' && (
-                <GuildBossTable rows={guildBossRanking} />
+                <GuildBossTable rows={guildBossRanking} onUserClick={setSelectedUserId} />
               )}
             </>
           )}
         </div>
       </div>
+
+      {selectedUserId != null && (
+        <UserActionModal
+          userId={selectedUserId}
+          onClose={() => setSelectedUserId(null)}
+          onResult={showResult}
+        />
+      )}
     </>
   )
 }
 
-function DamageDungeonTable({ rows }: { rows: DamageDungeonRankItem[] }) {
+function DamageDungeonTable({ rows, onUserClick }: { rows: DamageDungeonRankItem[]; onUserClick: (userId: number) => void }) {
   if (rows.length === 0) return <p className="text-muted">데이터가 없습니다.</p>
   return (
     <div className="table-wrapper">
@@ -215,7 +238,7 @@ function DamageDungeonTable({ rows }: { rows: DamageDungeonRankItem[] }) {
         </thead>
         <tbody>
           {rows.map(r => (
-            <tr key={r.userId}>
+            <tr key={r.userId} onClick={() => onUserClick(r.userId)} style={{ cursor: 'pointer' }}>
               <td><RankBadge rank={r.ranking} /></td>
               <td>{r.userGameName}</td>
               <td>{r.level}</td>
@@ -265,7 +288,7 @@ function GuildTable({ rows }: { rows: GuildRankItem[] }) {
   )
 }
 
-function GuildBossTable({ rows }: { rows: GuildBossRankItem[] }) {
+function GuildBossTable({ rows, onUserClick }: { rows: GuildBossRankItem[]; onUserClick: (userId: number) => void }) {
   if (rows.length === 0) return <p className="text-muted">길드를 선택하거나 데이터가 없습니다.</p>
   return (
     <div className="table-wrapper">
@@ -281,7 +304,7 @@ function GuildBossTable({ rows }: { rows: GuildBossRankItem[] }) {
         </thead>
         <tbody>
           {rows.map(r => (
-            <tr key={r.userId}>
+            <tr key={r.userId} onClick={() => onUserClick(r.userId)} style={{ cursor: 'pointer' }}>
               <td><RankBadge rank={r.ranking} /></td>
               <td>{r.userGameName}</td>
               <td>{r.level}</td>

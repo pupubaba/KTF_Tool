@@ -11,6 +11,7 @@ import type {
   GuideInfo,
   PurchaseItem,
   ShopPurchaseLog,
+  GatchaLog,
   MailItem,
   MailSendRequest,
   MailListSendRequest,
@@ -24,6 +25,7 @@ import type {
   DailyRetentionMetrics,
   ServerStatusResponse,
   ServerStatusValue,
+  PayingUserResponse,
 } from '../types'
 
 // ── Auth ──────────────────────────────────────────────────
@@ -104,6 +106,17 @@ export async function getUserPurchase(userId: number) {
 
 export async function getShopPurchaseLogs(userId: number) {
   const res = await authClient.get<ShopPurchaseLog[]>(`/api/shop/purchase-logs/${userId}`)
+  return res.data
+}
+
+export async function getPayingUsers(date: string) {
+  const res = await authClient.get<PayingUserResponse[]>(`/api/shop/paying-users/${date}`)
+  return res.data
+}
+
+// ── Gatcha ────────────────────────────────────────────────
+export async function getGatchaLogs(userId: number) {
+  const res = await authClient.get<GatchaLog[]>(`/api/gatcha/logs/${userId}`)
   return res.data
 }
 
