@@ -79,6 +79,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <NavItem to="/users" label="유저 관리" icon="👤" />
           <NavItem to="/mail" label="우편 발송" icon="✉️" />
           <NavItem to="/ranking" label="실시간 랭킹" icon="🏆" />
+          <NavItem to="/coupon" label="쿠폰 관리" icon="🎟️" />
           {userInfo?.roles.includes('ROLE_ADMIN') && (
             <NavItem to="/metrics" label="게임 지표" icon="📊" />
           )}

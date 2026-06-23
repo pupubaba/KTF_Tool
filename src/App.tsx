@@ -7,6 +7,7 @@ import MailPage from './pages/MailPage'
 import AdminPage from './pages/AdminPage'
 import RankingPage from './pages/RankingPage'
 import MetricsPage from './pages/MetricsPage'
+import CouponPage from './pages/CouponPage'
 import { setBaseURL } from './api/client'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -26,6 +27,7 @@ function AppRoutes() {
       <Route path="/mail" element={<ProtectedRoute><MailPage /></ProtectedRoute>} />
       <Route path="/ranking" element={<ProtectedRoute><RankingPage /></ProtectedRoute>} />
       <Route path="/metrics" element={<ProtectedRoute><MetricsPage /></ProtectedRoute>} />
+      <Route path="/coupon" element={<ProtectedRoute><CouponPage /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to={jwt ? '/users' : '/login'} replace />} />
     </Routes>

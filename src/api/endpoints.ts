@@ -26,6 +26,9 @@ import type {
   ServerStatusResponse,
   ServerStatusValue,
   PayingUserResponse,
+  CouponResponse,
+  CreateCouponRequest,
+  CreateBulkCouponRequest,
 } from '../types'
 
 // ── Auth ──────────────────────────────────────────────────
@@ -117,6 +120,22 @@ export async function getPayingUsers(date: string) {
 // ── Gatcha ────────────────────────────────────────────────
 export async function getGatchaLogs(userId: number) {
   const res = await authClient.get<GatchaLog[]>(`/api/gatcha/logs/${userId}`)
+  return res.data
+}
+
+// ── Coupon ────────────────────────────────────────────────
+export async function createCoupon(data: CreateCouponRequest) {
+  const res = await authClient.post<CouponResponse>('/api/coupons', data)
+  return res.data
+}
+
+export async function createBulkCoupons(data: CreateBulkCouponRequest) {
+  const res = await authClient.post<CouponResponse[]>('/api/coupons/bulk', data)
+  return res.data
+}
+
+export async function getCoupons() {
+  const res = await authClient.get<CouponResponse[]>('/api/coupons')
   return res.data
 }
 

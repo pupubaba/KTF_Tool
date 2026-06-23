@@ -241,3 +241,38 @@ export interface PayingUserResponse {
   userGameName: string
   totalAmount: number
 }
+
+// ── Coupon ────────────────────────────────────────────────
+export interface CouponResponse {
+  id: number
+  name: string
+  code: string
+  gettingItem: string
+  used: boolean
+  keyword: boolean
+  accountCoupon: boolean
+  beginDate: string | null
+  expireDate: string | null
+  mailTemplateIndex: number
+  createdDate: string
+}
+
+export interface CreateCouponRequest {
+  name: string
+  gettingItem: string
+  code?: string
+  keyword?: boolean
+  accountCoupon?: boolean
+  beginDate?: string
+  expireDate?: string
+  mailTemplateIndex?: number
+}
+
+export interface CreateBulkCouponRequest {
+  name: string
+  gettingItem: string
+  quantity: number
+  beginDate?: string
+  expireDate?: string
+  mailTemplateIndex?: number
+}
